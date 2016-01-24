@@ -54,11 +54,13 @@ router.get("/load1", function(req, resp, next) {
     }, function(error, result) {
       if (response != undefined) { 
       response = iconv.decode(response,'GBK');
-      response = response.replace(/<\/head/g, result.head+"<\/head");
-      response = response.replace(/<\/body/g, result.body+"<\/body");
-      response = response.replace(/href/g, "owshref");
+      response = response.toString();
+      response = response.replace(/<\/head/, result.head+"<\/head");
+      response = response.replace(/<\/head/, result.body+"<\/body");
+      response = response.replace(/<a href/g, "<a owshref");
      }
      resp.end(iconv.encode(response,'GBK'));
+     //resp.end(response);
     });
     
 
@@ -76,12 +78,17 @@ router.get("/load1", function(req, resp, next) {
 router.get("*", function(req, resp, next) {
   var referer = unescape(req.headers['referer']);
   var index = referer.indexOf("load1?url");
-  var originURL = referer.substring(index+9, referer.length);
+  var originURL = referer.substring(index+10, referer.length);
   var path = req.url;
- 
-  //originURL = "http://www.huxiu.com";
   var fullpath = originURL + path;
-  request.get(fullpath).pipe(resp)
+  request.get(fullpath)
+      .on('response',
+        function (response) {
+          //Here you can modify the headers
+          console.log(response.headers['content-type']);
+          //resp.writeHead(response.statusCode, response.headers);
+        }
+      ).pipe(resp);
 });
 
 module.exports = router;
