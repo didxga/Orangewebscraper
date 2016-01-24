@@ -1,0 +1,16 @@
+<style>
+  body {
+  	padding-top:30px!important;
+  }
+  .ows_toolbar {
+  	min-width:100%;
+  	line-height:25px;
+  	height:30px;
+  	background-color: green;
+  	position:fixed;
+  	top:0;
+  }
+  a {
+  	cursor:pointer;
+  }
+</style>
